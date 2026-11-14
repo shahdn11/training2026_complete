@@ -1,0 +1,1174 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Layout — Training 2026</title>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+  }
+}
+</script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #161616;
+}
+
+body {
+    --side: 185px;
+    --header: 36px;
+    --footer: 22px;
+    --hero: 40%;
+    background: white;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.app {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+}
+
+/* HEADER */
+
+.topbar {
+    background: #970000;
+    color: white;
+    min-height: var(--header);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 12px;
+    z-index: 4;
+    box-shadow: 0 1px 4px #0003;
+}
+
+.brand {
+    font-weight: bold;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 15px;
+}
+
+.brand-icon {
+    background: white;
+    color: #9b0000;
+    border-radius: 4px;
+    padding: 2px 5px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.top-action {
+    border: 0;
+    background: transparent;
+    color: white;
+    padding: 4px 9px;
+    border-radius: 3px;
+    font: 12px Arial, sans-serif;
+    transition: background .15s;
+}
+
+.top-action:hover,
+.top-action:focus-visible {
+    background: #ffffff30;
+}
+
+.updates {
+    font: 12px Arial, sans-serif;
+    margin: 6px 0 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.update {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.remove {
+    color: white;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.remove:hover {
+    color: #ffbaba;
+}
+
+/* MAIN GRID */
+
+.workspace {
+    display: grid;
+    grid-template-columns: var(--side) minmax(0, 1fr);
+    min-height: 0;
+    min-width: 0;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    background: #f4f4f4;
+    position: relative;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    box-shadow: inset -1px 0 #d7d7d7;
+    z-index: 2;
+    transition: box-shadow .2s;
+}
+
+.sidebar:hover {
+    box-shadow: inset -1px 0 #ccc, 5px 0 16px #0003;
+}
+
+.menu {
+    padding: 6px 5px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #242424;
+    font: 12px Arial, sans-serif;
+    min-height: 28px;
+    padding: 6px 9px;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition: background .15s;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+    background: #eadbdb;
+    color: #870000;
+}
+
+.menu-item .ico {
+    width: 16px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.resizer {
+    position: sticky;
+    bottom: 0;
+    margin-top: -100vh;
+    margin-left: auto;
+    width: 7px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 3;
+    touch-action: none;
+}
+
+.resizer:hover,
+.resizer.dragging {
+    background: #a5a5a577;
+}
+
+/* CONTENT LAYOUT */
+
+.content {
+    display: grid;
+    grid-template-rows:
+        minmax(105px, var(--hero))
+        minmax(0, 1fr)
+        var(--footer);
+    min-height: 0;
+    min-width: 0;
+    position: relative;
+}
+
+.visuals {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* CSS ANIMATION */
+
+.animation-panel {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(130deg, #bd0000, #8e0000);
+    display: grid;
+    place-items: center;
+    isolation: isolate;
+}
+
+.animation-panel h2 {
+    position: relative;
+    z-index: 2;
+    color: white;
+    font-size: clamp(13px, 1.35vw, 20px);
+    text-shadow: 0 1px 2px #0003;
+    white-space: nowrap;
+}
+
+.animated-track {
+    position: absolute;
+    inset: 0;
+    width: 200%;
+    height: 100%;
+    display: flex;
+    animation: slide 17s linear infinite;
+    pointer-events: none;
+}
+
+.pattern {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+.shape {
+    position: absolute;
+    background: #ffb5ae59;
+    border-radius: 22px;
+}
+
+.s1 {
+    left: 5%;
+    top: 58%;
+    width: 20%;
+    height: 29%;
+}
+
+.s2 {
+    left: 37%;
+    top: 18%;
+    width: 27%;
+    height: 41%;
+}
+
+.s3 {
+    left: 69%;
+    top: -10%;
+    width: 29%;
+    height: 50%;
+}
+
+.s4 {
+    left: 61%;
+    top: 64%;
+    width: 19%;
+    height: 35%;
+}
+
+.s5 {
+    left: 38%;
+    top: 83%;
+    width: 28%;
+    height: 34%;
+}
+
+.outline {
+    position: absolute;
+    left: 81%;
+    top: 24%;
+    width: 37%;
+    height: 62%;
+    border: 6px solid #ffa6a65c;
+    border-radius: 35px;
+}
+
+.tiny {
+    position: absolute;
+    left: 75%;
+    top: 46%;
+    width: 5%;
+    height: 8%;
+    border: 1px solid #ffb8b866;
+    border-radius: 5px;
+}
+
+@keyframes slide {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* HEART SECTION */
+
+.heart-panel {
+    position: relative;
+    background: #f7f7f7;
+    overflow: hidden;
+    min-width: 0;
+    min-height: 0;
+}
+
+.heart-panel canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+}
+
+.heart-panel canvas:active {
+    cursor: grabbing;
+}
+
+.heart-fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font: 12px Arial, sans-serif;
+    color: #777;
+    pointer-events: none;
+    text-align: center;
+    padding: 10px;
+}
+
+/* ARTICLE */
+
+.article {
+    min-height: 0;
+    overflow: auto;
+    padding: 12px 14px 32px;
+    background: white;
+    scrollbar-width: thin;
+}
+
+.article h2 {
+    font-size: 20px;
+    margin: 0 0 13px;
+}
+
+.article h3 {
+    font-size: 16px;
+    margin: 12px 0 9px;
+}
+
+.article p {
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 0 0 14px;
+}
+
+.tech {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 7px 0 15px;
+}
+
+.tech p {
+    margin: 0;
+    flex: 1;
+}
+
+.tech-logo {
+    width: 65px;
+    height: 65px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    color: white;
+    font: bold 22px Arial, sans-serif;
+}
+
+.html-logo {
+    background: #e84d29;
+}
+
+.css-logo {
+    background: #2954e8;
+}
+
+.js-logo {
+    background: #f4d943;
+    color: #242424;
+}
+
+/* FOOTER */
+
+.footer {
+    background: white;
+    border-top: 1px solid #dedede;
+    text-align: center;
+    font-size: 10px;
+    color: #777;
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    white-space: nowrap;
+}
+
+/* FLOATING PLUS */
+
+.plus {
+    position: absolute;
+    z-index: 3;
+    bottom: calc(var(--footer) - 15px);
+    inset-inline-end: 19px;
+    border: 0;
+    background: #a00000;
+    color: white;
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    font: 26px Arial, sans-serif;
+    box-shadow: 0 2px 7px #0005;
+    display: grid;
+    place-items: center;
+    transition: transform .2s, background .2s;
+}
+
+.plus:hover {
+    transform: translateY(-4px) rotate(90deg) scale(1.07);
+    background: #c00000;
+}
+
+/* ARABIC RTL */
+
+html[dir="rtl"] .workspace {
+    grid-template-columns: minmax(0, 1fr) var(--side);
+}
+
+html[dir="rtl"] .sidebar {
+    grid-column: 2;
+    grid-row: 1;
+    box-shadow: inset 1px 0 #ddd;
+}
+
+html[dir="rtl"] .sidebar:hover {
+    box-shadow: -5px 0 16px #0003;
+}
+
+html[dir="rtl"] .content {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+html[dir="rtl"] .visuals {
+    direction: rtl;
+}
+
+html[dir="rtl"] .topbar {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .brand {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .menu-item {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .article {
+    text-align: right;
+}
+
+html[dir="rtl"] .tech {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .resizer {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* SMALL SCREENS */
+
+@media (max-width: 520px) {
+    body {
+        --hero: 37%;
+    }
+
+    .topbar {
+        padding: 5px 7px;
+    }
+
+    .top-action {
+        padding: 4px 5px;
+        font-size: 10px;
+    }
+
+    .brand {
+        font-size: 12px;
+    }
+
+    .article {
+        padding: 10px;
+    }
+
+    .tech-logo {
+        width: 44px;
+        height: 44px;
+        font-size: 15px;
+    }
+
+    .article h2 {
+        font-size: 17px;
+    }
+
+    .article p {
+        font-size: 12px;
+    }
+
+    .menu-item {
+        font-size: 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="topbar">
+
+        <div>
+            <div class="brand">
+                <span class="brand-icon">▣</span>
+                <span id="brandText">Training 2026</span>
+            </div>
+
+            <div id="updates" class="updates"></div>
+        </div>
+
+        <div class="header-right">
+            <button id="language" class="top-action">
+                ◎ العربية
+            </button>
+
+            <button id="add" class="top-action">
+                ＋ Add content
+            </button>
+
+            <button id="clear" class="top-action">
+                ♧ Clear content
+            </button>
+        </div>
+
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="workspace">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+
+            <nav class="menu" id="menu"></nav>
+
+            <div
+                class="resizer"
+                id="resizer"
+                role="separator"
+                aria-label="Resize sidebar"
+                aria-orientation="vertical"
+                tabindex="0">
+            </div>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="content">
+
+            <!-- TOP VISUALS -->
+            <section class="visuals">
+
+                <!-- ANIMATION -->
+                <div class="animation-panel">
+
+                    <div class="animated-track" aria-hidden="true">
+
+                        <div class="pattern">
+                            <i class="shape s1"></i>
+                            <i class="shape s2"></i>
+                            <i class="shape s3"></i>
+                            <i class="shape s4"></i>
+                            <i class="shape s5"></i>
+                            <i class="outline"></i>
+                            <i class="tiny"></i>
+                        </div>
+
+                        <div class="pattern">
+                            <i class="shape s1"></i>
+                            <i class="shape s2"></i>
+                            <i class="shape s3"></i>
+                            <i class="shape s4"></i>
+                            <i class="shape s5"></i>
+                            <i class="outline"></i>
+                            <i class="tiny"></i>
+                        </div>
+
+                    </div>
+
+                    <h2>CSS Animation</h2>
+
+                </div>
+
+                <!-- 3D HEART -->
+                <div class="heart-panel" id="heartPanel">
+                    <div class="heart-fallback" id="heartStatus">
+                        Loading 3D heart...
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- SCROLLABLE TEXT -->
+            <section class="article" id="article">
+
+                <h2>HTML, CSS &amp; JavaScript</h2>
+
+                <p>
+                    The web platform is built on three complementary
+                    technologies. Each has a distinct job, and together
+                    they form every page you browse.
+                </p>
+
+                <h3>HTML</h3>
+
+                <div class="tech">
+
+                    <div class="tech-logo html-logo">
+                        HTML
+                    </div>
+
+                    <p>
+                        HTML (HyperText Markup Language) provides the
+                        structure of a page: headings, paragraphs,
+                        links, images, and forms. It gives the browser
+                        a document to render and gives assistive tools
+                        something meaningful to read.
+                    </p>
+
+                </div>
+
+                <h3>CSS</h3>
+
+                <div class="tech">
+
+                    <div class="tech-logo css-logo">
+                        CSS
+                    </div>
+
+                    <p>
+                        CSS (Cascading Style Sheets) controls presentation:
+                        layout, color, spacing, typography, and
+                        responsiveness. It lets the same HTML adapt
+                        to different screen sizes and themes without
+                        changing the markup.
+                    </p>
+
+                </div>
+
+                <h3>JavaScript</h3>
+
+                <div class="tech">
+
+                    <div class="tech-logo js-logo">
+                        JS
+                    </div>
+
+                    <p>
+                        JavaScript adds behavior. It runs in the browser
+                        to respond to user interaction, update the page
+                        without a reload, fetch data from a server,
+                        and tie HTML and CSS together into an
+                        interactive experience.
+                    </p>
+
+                </div>
+
+                <h3>How they work together</h3>
+
+                <p>
+                    A browser parses HTML into the DOM, applies CSS
+                    rules to determine how each element looks, and
+                    runs JavaScript to modify both the DOM and the
+                    styles over time. Changing text, hiding an element,
+                    or reacting to a click all rely on this pipeline.
+                </p>
+
+                <p>
+                    This separation of concerns — structure,
+                    presentation, and behavior — is why the same
+                    three technologies still power everything
+                    from simple static pages to complex
+                    single-page applications today.
+                </p>
+
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="footer">
+                © 2026 Training 2026. All rights reserved.
+            </footer>
+
+            <!-- PLUS BUTTON -->
+            <button class="plus" id="plus" aria-label="Add content">
+                +
+            </button>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+/* SIDEBAR ITEMS */
+
+const items = [
+    ["Dashboard", "▦", "#5482d6"],
+    ["HTML Editor", "〈〉", "#48bda9"],
+    ["CSS Styles", "✎", "#dfa642"],
+    ["JS Console", "▣", "#c5689e"],
+    ["Components", "♧", "#5794d5"],
+    ["Templates", "▤", "#47baa2"],
+    ["Snippets", "▥", "#e1a536"],
+    ["Projects", "▱", "#ce6898"],
+    ["Live Preview", "◉", "#638bd4"],
+    ["Responsive Design", "▣", "#50b9a5"],
+    ["Color Palette", "◉", "#dba33e"],
+    ["Typography", "Aa", "#ce69a0"],
+    ["Animations", "◌", "#5c94d6"],
+    ["Debugger", "☼", "#4cb9a0"],
+    ["Settings", "☀", "#dca83e"]
+];
+
+const menu = document.getElementById("menu");
+
+items.forEach(([name, symbol, color]) => {
+
+    const a = document.createElement("a");
+
+    a.className = "menu-item";
+    a.href = "#";
+
+    a.innerHTML = `
+        <span class="ico" style="color:${color}">
+            ${symbol}
+        </span>
+        <span>${name}</span>
+    `;
+
+    a.addEventListener("click", function(event) {
+
+        event.preventDefault();
+
+        document.querySelectorAll(".menu-item").forEach(el => {
+            el.style.background = "";
+        });
+
+        a.style.background = "#eadbdb";
+
+    });
+
+    menu.appendChild(a);
+
+});
+
+
+/* ADD AND REMOVE UPDATES */
+
+let nextUpdate = 1;
+
+const updates = document.getElementById("updates");
+
+function addUpdate() {
+
+    const el = document.createElement("div");
+    el.className = "update";
+
+    const name = document.createElement("span");
+    name.textContent = "Update " + nextUpdate++;
+
+    const x = document.createElement("button");
+    x.className = "remove";
+    x.textContent = "×";
+    x.title = "Delete update";
+
+    x.onclick = function() {
+        el.remove();
+    };
+
+    el.append(name, x);
+    updates.appendChild(el);
+
+}
+
+document.getElementById("add").onclick = addUpdate;
+
+document.getElementById("plus").onclick = addUpdate;
+
+document.getElementById("clear").onclick = function() {
+
+    updates.replaceChildren();
+    nextUpdate = 1;
+
+};
+
+
+/* LANGUAGE SWITCH */
+
+const language = document.getElementById("language");
+
+language.onclick = function() {
+
+    const rtl = document.documentElement.dir !== "rtl";
+
+    document.documentElement.dir = rtl ? "rtl" : "ltr";
+    document.documentElement.lang = rtl ? "ar" : "en";
+
+    language.textContent = rtl ? "◎ English" : "◎ العربية";
+
+    document.getElementById("brandText").textContent =
+        rtl ? "تدريب 2026" : "Training 2026";
+
+    document.getElementById("add").textContent =
+        rtl ? "＋ إضافة محتوى" : "＋ Add content";
+
+    document.getElementById("clear").textContent =
+        rtl ? "♧ مسح المحتوى" : "♧ Clear content";
+
+};
+
+
+/* SIDEBAR RESIZING */
+
+const resizer = document.getElementById("resizer");
+const sidebar = document.getElementById("sidebar");
+
+let resizing = false;
+
+function setWidth(clientX) {
+
+    const rtl = document.documentElement.dir === "rtl";
+
+    const width = rtl
+        ? window.innerWidth - clientX
+        : clientX;
+
+    const newWidth = Math.max(
+        115,
+        Math.min(width, Math.min(360, window.innerWidth * .58))
+    );
+
+    document.body.style.setProperty(
+        "--side",
+        newWidth + "px"
+    );
+
+}
+
+resizer.addEventListener("pointerdown", function(event) {
+
+    resizing = true;
+
+    resizer.setPointerCapture(event.pointerId);
+    resizer.classList.add("dragging");
+
+    event.preventDefault();
+
+});
+
+resizer.addEventListener("pointermove", function(event) {
+
+    if (resizing) {
+        setWidth(event.clientX);
+    }
+
+});
+
+function stopResize() {
+
+    resizing = false;
+    resizer.classList.remove("dragging");
+
+}
+
+resizer.addEventListener("pointerup", stopResize);
+resizer.addEventListener("pointercancel", stopResize);
+
+resizer.addEventListener("keydown", function(event) {
+
+    if (
+        event.key === "ArrowLeft" ||
+        event.key === "ArrowRight"
+    ) {
+
+        event.preventDefault();
+
+        const width = parseFloat(
+            getComputedStyle(document.body)
+            .getPropertyValue("--side")
+        ) || 185;
+
+        const delta = event.key === "ArrowRight" ? 10 : -10;
+
+        const direction = document.documentElement.dir === "rtl"
+            ? -1
+            : 1;
+
+        const newWidth = Math.max(
+            115,
+            Math.min(360, width + delta * direction)
+        );
+
+        document.body.style.setProperty(
+            "--side",
+            newWidth + "px"
+        );
+
+    }
+
+});
+
+
+/* THREE.JS 3D HEART */
+
+try {
+
+    const THREE = await import("three");
+
+    const { GLTFLoader } = await import(
+        "three/addons/loaders/GLTFLoader.js"
+    );
+
+    const { OrbitControls } = await import(
+        "three/addons/controls/OrbitControls.js"
+    );
+
+    const panel = document.getElementById("heartPanel");
+
+    const scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0xf7f7f7);
+
+    const camera = new THREE.PerspectiveCamera(
+        38,
+        1,
+        0.01,
+        1000
+    );
+
+    const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+    );
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    panel.appendChild(renderer.domElement);
+
+    /* LIGHTS */
+
+    scene.add(
+        new THREE.HemisphereLight(
+            0xffffff,
+            0x9d7771,
+            2.3
+        )
+    );
+
+    const light = new THREE.DirectionalLight(
+        0xffffff,
+        2.2
+    );
+
+    light.position.set(3, 5, 6);
+    scene.add(light);
+
+    const fill = new THREE.DirectionalLight(
+        0xffffff,
+        1.1
+    );
+
+    fill.position.set(-5, 1, -4);
+    scene.add(fill);
+
+    /* CONTROLS */
+
+    const controls = new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+
+    controls.enablePan = false;
+    controls.enableRotate = true;
+    controls.enableZoom = true;
+
+    controls.minDistance = 0.2;
+    controls.maxDistance = 30;
+
+    /* LOAD HEART */
+
+    const loader = new GLTFLoader();
+
+    loader.load(
+    "./human-heart.glb",
+
+        function(gltf) {
+
+            const heart = gltf.scene;
+
+            const box = new THREE.Box3().setFromObject(heart);
+
+            const center = box.getCenter(
+                new THREE.Vector3()
+            );
+
+            const size = box.getSize(
+                new THREE.Vector3()
+            );
+
+            heart.position.sub(center);
+
+            scene.add(heart);
+
+            const maxDim = Math.max(
+                size.x,
+                size.y,
+                size.z
+            );
+
+            const dist =
+                maxDim /
+                (2 * Math.tan(
+                    THREE.MathUtils.degToRad(camera.fov / 2)
+                )) * 1.7;
+
+            camera.position.set(
+                dist * 0.18,
+                dist * 0.05,
+                dist
+            );
+
+            camera.near = Math.max(
+                0.001,
+                maxDim / 1000
+            );
+
+            camera.far = dist * 30;
+
+            camera.updateProjectionMatrix();
+
+            controls.minDistance = dist * 0.32;
+            controls.maxDistance = dist * 5;
+
+            controls.target.set(0, 0, 0);
+            controls.update();
+
+            document.getElementById("heartStatus").remove();
+
+        },
+
+        undefined,
+
+        function(error) {
+
+            console.error(error);
+
+            document.getElementById("heartStatus").textContent =
+                "Heart model unavailable. Check the GLB filename.";
+
+        }
+
+    );
+
+    /* RESPONSIVE CANVAS */
+
+    function resize() {
+
+        const width = panel.clientWidth;
+        const height = panel.clientHeight;
+
+        if (!width || !height) return;
+
+        camera.aspect = width / height;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            width,
+            height,
+            false
+        );
+
+    }
+
+    new ResizeObserver(resize).observe(panel);
+
+    resize();
+
+    /* ANIMATION LOOP */
+
+    renderer.setAnimationLoop(function() {
+
+        controls.update();
+
+        renderer.render(scene, camera);
+
+    });
+
+} catch(error) {
+
+    console.error(error);
+
+    document.getElementById("heartStatus").textContent =
+        "3D viewer needs internet access and a local server.";
+
+}
+
+</script>
+
+</body>
+</html>
