@@ -462,20 +462,23 @@ button {
     background: #c00000;
 }
 
+
 /* ARABIC RTL */
 
 html[dir="rtl"] .workspace {
+    direction: ltr;
     grid-template-columns: minmax(0, 1fr) var(--side);
 }
 
 html[dir="rtl"] .sidebar {
     grid-column: 2;
     grid-row: 1;
+    direction: rtl;
     box-shadow: inset 1px 0 #ddd;
 }
 
 html[dir="rtl"] .sidebar:hover {
-    box-shadow: -5px 0 16px #0003;
+    box-shadow: inset 1px 0 #ccc, -5px 0 16px #0003;
 }
 
 html[dir="rtl"] .content {
@@ -500,6 +503,7 @@ html[dir="rtl"] .menu-item {
 }
 
 html[dir="rtl"] .article {
+    direction: rtl;
     text-align: right;
 }
 
@@ -511,6 +515,7 @@ html[dir="rtl"] .resizer {
     margin-left: 0;
     margin-right: auto;
 }
+
 
 /* SMALL SCREENS */
 
