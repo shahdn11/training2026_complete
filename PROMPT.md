@@ -1,3 +1,5 @@
+SHAHD NEIROUKH 202404591
+
 بدي تعمللي زي هاي الصفحة بالزبط تكون html, java script, css كلهم بنفس الملف 
 the left menu is resizable as shown in the picture and the resizing doesnt affect the layout 
 when the page is minimized the layout stays ok it doesnt get affected and the left menu would have a scroll when the page is minimized same as the paragraphs under the two pictures 
